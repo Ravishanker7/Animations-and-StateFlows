@@ -3,6 +3,7 @@ package com.example.test
 import android.media.Image
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,12 +22,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.SemanticsActions.Expand
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -34,29 +37,37 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ChatScreen(){
     val list=UsersData()
-    LazyColumn {
+
+    LazyColumn(modifier = Modifier.clickable {  }) {
         items(list){
-            val extend by remember {
-                mutableStateOf(false)
-            }
-            Row(modifier= Modifier
-                .fillMaxWidth()
-                .padding(all = 8.dp)){
-                Image(painter = painterResource(id = R.drawable.img) ,
-                    contentDescription =null,
-                    modifier = Modifier
-                        .size(60.dp)
-                        .clip(CircleShape)  )
-                Spacer(modifier = Modifier.width(10.dp))
-                Column() {
-                    Text(text = it.author)
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Text(text = it.msg, maxLines = 1)
-                }
-            }
+            users(list = it)
         }
     }
 
+}
+@Composable
+fun users(list: ListOfUsers){
+
+    Row(modifier= Modifier
+        .fillMaxWidth()
+        .padding(all = 8.dp)){
+        Image(painter = painterResource(id = R.drawable.img) ,
+            contentDescription =null,
+            modifier = Modifier
+                .size(60.dp)
+                .clip(CircleShape)  )
+        Spacer(modifier = Modifier.width(10.dp))
+
+        var temp= remember {
+            mutableStateOf(false)
+        }
+        Column(modifier = Modifier.clickable {temp.value=!temp.value
+        }) {
+            Text(text = list.author)
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(text = list.msg, maxLines = if(temp.value) Int.MAX_VALUE else 1)
+        }
+    }
 }
 data class ListOfUsers(
     val author : String,
