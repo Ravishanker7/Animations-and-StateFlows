@@ -32,7 +32,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TestTheme {
-                ChatScreen()
+                //ChatScreen()
+                Initializing()
             }
         }
     }
